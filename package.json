@@ -1,0 +1,25 @@
+{
+  "name": "react-native-view-plugins",
+  "version": "1.0.0",
+  "description": "useful view components",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lvbingru/react-native-view-plugins.git"
+  },
+  "keywords": [
+    "react-native",
+    "ios",
+    "android",
+    "view-plugin"
+  ],
+  "author": "lvbingru",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lvbingru/react-native-view-plugins/issues"
+  },
+  "homepage": "https://github.com/lvbingru/react-native-view-plugins#readme"
+}
