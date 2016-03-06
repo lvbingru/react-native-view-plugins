@@ -109,7 +109,7 @@ var styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         alignItems : 'stretch',
-        backgroundColor: 'f66f40',
+        backgroundColor: '#f66f40',
         height: Platform.OS === 'android'?44:64,
         paddingTop: Platform.OS === 'android'?0:20,
     },
