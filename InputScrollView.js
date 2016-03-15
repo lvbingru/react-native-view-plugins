@@ -4,13 +4,15 @@
 
 import React, {InteractionManager, Component, PropTypes, View, Text, ScrollView, Platform, Animated, UIManager, NativeModules} from 'react-native';
 import TextInputState from 'react-native/Libraries/Components/TextInput/TextInputState';
-import package from 'react-native/package.json';
-//import semver from 'semver';
+import packageData from 'react-native/package.json';
+import semver from 'semver';
 
 const propTypes = {
+    distance : PropTypes.number,
 }
 
 const defaultProps = {
+    distance : 160,
 }
 
 export default class InputScrollView extends Component {
@@ -26,7 +28,7 @@ export default class InputScrollView extends Component {
     }
 
     render() {
-        const {children, ...others} = this.props
+        const {distance, children, ...others} = this.props
         return (
           <ScrollView
             style = {{flex:1}}
@@ -39,7 +41,7 @@ export default class InputScrollView extends Component {
                if (currentlyFocusedTextInput != null && NativeModules.BBViewPlugins) {
                    NativeModules.BBViewPlugins.isSubview(currentlyFocusedTextInput, this.scrollViewRef.getInnerViewNode(), r=>{
                         if (r===true) {
-                            this.scrollViewRef.scrollResponderScrollNativeHandleToKeyboard(currentlyFocusedTextInput,160,true);
+                            this.scrollViewRef.scrollResponderScrollNativeHandleToKeyboard(currentlyFocusedTextInput,distance,true);
                             this.moved = true;
                         }
                    })
@@ -48,7 +50,12 @@ export default class InputScrollView extends Component {
             onKeyboardWillHide = {e=> {
                 if (this.moved) {
                     this.moved = false;
-                    this.scrollViewRef.scrollTo({x:0, y:this.offsetY});
+                    if (semver.gte(packageData.version, '0.20.0')) {
+                       this.scrollViewRef.scrollTo({x:0, y:this.offsetY});
+                    }
+                    else {
+                       this.scrollViewRef.scrollTo(this.offsetY, 0);
+                    }
                 }
             }}
             onMomentumScrollEnd = {e=>{
