@@ -56,20 +56,7 @@ export default class RootNavigator extends Component {
                       ...others
                   }
 
-                    ref = {ref=>{
-                        if (this.navigatorRef !== ref) {
-                            if (ref && !ref.popN && ref.getCurrentRoutes) {
-                                ref.popN = (num)=>{
-                                    const routes = ref.getCurrentRoutes()
-                                    const popNum = Math.min(num, routes.length-1);
-                                    if (popNum > 0) {
-                                        ref.popToRoute(routes[routes.length-1-popNum]);
-                                    }
-                                }
-                            }
-                            this.navigatorRef = ref;
-                        }
-                    }}
+                    ref = {ref=>this.navigatorRef = ref}
                     initialRoute = {(initialRoute instanceof PageContainer)?initialRoute:this.wrapPage(initialRoute)}
                     // navigatoriOS
                     navigationBarHidden = {true}
@@ -101,29 +88,40 @@ export default class RootNavigator extends Component {
         return _instance;
     }
 
-    wrapPage(page, params) {
-        const {component, ...others} = page;
+    wrapPage(page) {
+        const {component, params, ...others} = page;
         const route = {
+            title : '',
             ...others,
             component: PageContainer,
-            content: component,
+            contentComponent: component,
             passProps: {params},
         }
         return route;
     }
 
-    push(page, params) {
-        const route = this.wrapPage(page, params);
+    push(page) {
+        const route = this.wrapPage(page);
         this.navigatorRef.push(route);
     }
 
-    pop(num=1) {
+    pop() {
         const nav = this.navigatorRef;
-        if (num === 1) {
-            nav.pop();
+        nav.pop();
+    }
+
+    popN(num) {
+        const nav = this.navigatorRef;
+
+        if (nav.popN) {
+            nav.popN(num);
         }
-        else {
-            nav.popN && nav.popN(num);
+        else if (nav.getCurrentRoutes) {
+            const routes = nav.getCurrentRoutes()
+            const popNum = Math.min(num, routes.length-1);
+            if (popNum > 0) {
+                nav.popToRoute(routes[routes.length-1-popNum]);
+            }
         }
     }
 
@@ -149,12 +147,17 @@ class PageContainer extends Component {
 
     render() {
         const {route} = this.state;
-        const Scene = route.content;
-        const {title, passProps} = route;
+        const {title, passProps, contentComponent} = route;
         let params = this.props.params;
         if (!params) {
-            params = passProps && passProps.params
+            params = (passProps && passProps.params) || {};
         }
+
+        //if(__DEV__) {
+        //    console.log('params', params);
+        //}
+
+        const Scene = route.contentComponent;
 
         return(
             <View
