@@ -131,6 +131,12 @@ export default class RootNavigator extends Component {
             nav.popToTop()
         }
     }
+
+    replace(page) {
+        const nav = this.navigatorRef;
+        const route = this.wrapPage(page);
+        nav.replace(route);
+    }
 }
 
 RootNavigator.propTypes = propTypes;
