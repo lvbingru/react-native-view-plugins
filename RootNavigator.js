@@ -171,7 +171,9 @@ class PageContainer extends Component {
             >
                 <Scene
                     ref = {ref => { this.scene = ref } }
-                    params= {params}
+                  {
+                    ...params
+                  }
                     navigator = {RootNavigator.getInstance()}
                 />
             </View>
