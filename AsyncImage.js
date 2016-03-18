@@ -117,7 +117,7 @@ export default class AsyncImage extends Component {
             return;
         }
 
-        if (!source) {
+        if (!source || (source && !source.uri)) {
             this.setState({
                 realSource : source,
                 loadEnd : true,
