@@ -99,7 +99,7 @@ var styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'stretch',
         borderTopWidth : 1,
-        borderTopColor : 'c7c9ca',
+        borderTopColor : '#c7c9ca',
     },
     iconView: {
         flex: 1,
