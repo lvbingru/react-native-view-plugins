@@ -63,12 +63,13 @@ RCT_EXPORT_METHOD(isTextInput:(nonnull NSNumber *)reactTag
 
 RCT_EXPORT_METHOD(resizeImage:(NSString *)imageTag
                   options:(NSDictionary *)options
-                  callback:(RCTResponseSenderBlock)callback)
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 {
     [_bridge.imageLoader loadImageWithTag:imageTag callback:^(NSError *error, UIImage *image) {
         
         if (error) {
-            callback(@[error]);
+            reject([NSString stringWithFormat:@"%d",error.code], error.description, error);
         }
         else {
             CGFloat width = [RCTConvert float:options[@"width"]];
@@ -99,10 +100,10 @@ RCT_EXPORT_METHOD(resizeImage:(NSString *)imageTag
             [[NSFileManager defaultManager] createFileAtPath:filePath contents:data attributes:nil];
 
             if (error) {
-                callback(@[error]);
+                reject([NSString stringWithFormat:@"%d",error.code], error.description, error);
             }
             else {
-                callback(@[[NSURL fileURLWithPath:filePath].absoluteString]);
+                resolve([NSURL fileURLWithPath:filePath].absoluteString);
             }
         }
     }];
