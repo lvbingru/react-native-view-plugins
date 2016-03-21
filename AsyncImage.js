@@ -71,7 +71,7 @@ export default class AsyncImage extends Component {
             <Image
                 {...others}
                 style = {[style]}
-                source={realSource}
+                source={realSource || {uri:'http://'}}
                 onLayout = {(e)=>{
                     if (!realSource) {
                         const layout = e.nativeEvent.layout
