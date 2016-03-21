@@ -37,7 +37,14 @@ export default class InputScrollView extends Component {
             style = {{flex:1}}
             onStartShouldSetResponderCapture = {e=>{
                 if (tapToDismiss === true) {
-                    dismissKeyboard()
+                    NativeModules.BBViewPlugins && NativeModules.BBViewPlugins.isTextInput && NativeModules.BBViewPlugins.isTextInput(
+                        e.target,
+                        r => {
+                          if (r===false) {
+                            dismissKeyboard();
+                          }
+                        }
+                    );
                 }
                 return false;
             }}
