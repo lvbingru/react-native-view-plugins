@@ -61,25 +61,69 @@ RCT_EXPORT_METHOD(isTextInput:(nonnull NSNumber *)reactTag
     });
 }
 
-//RCT_EXPORT_METHOD(resizeImage:(NSString *)imageTag
-//                  options:(NSDictionary *)options
-//                  callback:(RCTResponseSenderBlock)callback)
-//{
-//    CGFloat width = [RCTConvert float:options[@"width"]];
-//    CGFloat height = [RCTConvert float:options[@"height"]];
-//    CGSize size= CGSizeMake(width, height);
-//    [_bridge.imageLoader loadImageWithTag:imageTag size:size scale:0.0f resizeMode:RCTResizeModeContain progressBlock:^(int64_t progress, int64_t total) {
-//        
-//    } completionBlock:^(NSError *error, UIImage *image) {
-//        if (error) {
-//            callback(@[error]);
-//        }
-//        else {
-//            [_bridge.imageStoreManager storeImage:image withBlock:^(NSString *tempImageTag) {
-//                callback(@[tempImageTag]);
-//            }];
-//        }
-//    }];
-//}
+RCT_EXPORT_METHOD(resizeImage:(NSString *)imageTag
+                  options:(NSDictionary *)options
+                  callback:(RCTResponseSenderBlock)callback)
+{
+    [_bridge.imageLoader loadImageWithTag:imageTag callback:^(NSError *error, UIImage *image) {
+        
+        if (error) {
+            callback(@[error]);
+        }
+        else {
+            CGFloat width = [RCTConvert float:options[@"width"]];
+            CGFloat height = [RCTConvert float:options[@"height"]];
+            CGFloat scale = 1.0;
+            if (image.size.width>0 && image.size.height>0) {
+                scale = MAX(width/(image.size.width *image.scale), height/(image.size.height * image.scale));
+            }
+            image = [self scaledImage:image scale:scale];
+            
+            NSData *data;
+            BOOL png = [RCTConvert BOOL:options[@"png"]];
+            if (png) {
+                data = UIImagePNGRepresentation(image);
+            }
+            else {
+                CGFloat compress = [RCTConvert float:options[@"compress"]];
+                if (compress == 0) {
+                    compress = 1.0f;
+                }
+                data = UIImageJPEGRepresentation(image, compress);
+            }
+            NSError *error;
+
+            NSString *tmpDirectory = NSTemporaryDirectory();
+            NSString *filePath = [tmpDirectory stringByAppendingPathComponent:[NSDate date].description];
+            
+            [[NSFileManager defaultManager] createFileAtPath:filePath contents:data attributes:nil];
+
+            if (error) {
+                callback(@[error]);
+            }
+            else {
+                callback(@[[NSURL fileURLWithPath:filePath].absoluteString]);
+            }
+        }
+    }];
+}
+
+- (UIImage *)scaledImage:(UIImage *)image scale:(CGFloat)scale
+{
+    if (scale >= 1.0) {
+        return image;
+    }
+    if (scale==0) {
+        scale = 1.0/[UIScreen mainScreen].scale;
+    }
+    CGFloat width = image.size.width * scale;
+    CGFloat height = image.size.height * scale;
+    
+    UIGraphicsBeginImageContext(CGSizeMake(width, height));
+    [image drawInRect:CGRectMake(0, 0, width, height)];
+    UIImage *scaledImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return scaledImage;
+}
 
 @end
