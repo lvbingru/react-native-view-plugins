@@ -100,6 +100,10 @@ export default class InputScrollView extends Component {
 
         );
     }
+
+    getInnerScrollView() {
+        return this.scrollViewRef;
+    }
 }
 
 InputScrollView.propTypes = propTypes;
