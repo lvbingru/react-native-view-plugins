@@ -57,6 +57,9 @@ export default class InputScrollView extends Component {
                        this.scrollViewRef = srcollView;
                 }}
                 onKeyboardWillShow = {e => {
+                    if (!this.scrollViewRef) {
+                        return;
+                    }
                    const currentlyFocusedTextInput = TextInputState.currentlyFocusedField();
                    if (currentlyFocusedTextInput != null && NativeModules.BBViewPlugins) {
                        NativeModules.BBViewPlugins.isSubview(currentlyFocusedTextInput, this.scrollViewRef.getInnerViewNode(), r=>{
@@ -68,6 +71,9 @@ export default class InputScrollView extends Component {
                    }
                 }}
                 onKeyboardWillHide = {e=> {
+                    if (!this.scrollViewRef) {
+                        return;
+                    }
                     if (this.moved) {
                         this.moved = false;
                         if (semver.gte(packageData.version, '0.20.0')) {
@@ -79,6 +85,9 @@ export default class InputScrollView extends Component {
                     }
                 }}
                 onMomentumScrollEnd = {e=>{
+                    if (!this.scrollViewRef) {
+                        return;
+                    }
                     if (!this.moved) {
                         this.offsetY = e.nativeEvent.contentOffset.y
                     }
