@@ -7,10 +7,12 @@ import TextInputState from 'react-native/Libraries/Components/TextInput/TextInpu
 import dismissKeyboard from 'react-native/Libraries/Utilities/dismissKeyboard';
 import packageData from 'react-native/package.json';
 import semver from 'semver';
+const ViewPlugins = NativeModules.BBViewPlugins;
 
 const propTypes = {
     distance : PropTypes.number,
     tapToDismiss : PropTypes.bool,
+    onKeyboardWillShow : PropTypes.func,
 }
 
 const defaultProps = {
@@ -31,13 +33,13 @@ export default class InputScrollView extends Component {
     }
 
     render() {
-        const {distance, tapToDismiss, keyboardShouldPersistTaps, children, ...others} = this.props
+        const {distance, tapToDismiss, onKeyboardWillShow, keyboardShouldPersistTaps, children, ...others} = this.props
         return (
           <View
             style = {{flex:1}}
             onStartShouldSetResponderCapture = {e=>{
                 if (tapToDismiss === true) {
-                    NativeModules.BBViewPlugins && NativeModules.BBViewPlugins.isTextInput && NativeModules.BBViewPlugins.isTextInput(
+                    ViewPlugins && ViewPlugins.isTextInput && ViewPlugins.isTextInput(
                         e.target,
                         r => {
                           if (r===false) {
@@ -61,11 +63,12 @@ export default class InputScrollView extends Component {
                         return;
                     }
                    const currentlyFocusedTextInput = TextInputState.currentlyFocusedField();
-                   if (currentlyFocusedTextInput != null && NativeModules.BBViewPlugins) {
-                       NativeModules.BBViewPlugins.isSubview(currentlyFocusedTextInput, this.scrollViewRef.getInnerViewNode(), r=>{
+                   if (currentlyFocusedTextInput != null) {
+                       ViewPlugins && ViewPlugins.isSubview(currentlyFocusedTextInput, this.scrollViewRef.getInnerViewNode(), r=>{
                             if (r===true) {
                                 this.scrollViewRef.scrollResponderScrollNativeHandleToKeyboard(currentlyFocusedTextInput,distance,true);
                                 this.moved = true;
+                                onKeyboardWillShow && onKeyboardWillShow(e);
                             }
                        })
                    }
@@ -85,9 +88,6 @@ export default class InputScrollView extends Component {
                     }
                 }}
                 onMomentumScrollEnd = {e=>{
-                    if (!this.scrollViewRef) {
-                        return;
-                    }
                     if (!this.moved) {
                         this.offsetY = e.nativeEvent.contentOffset.y
                     }
