@@ -1,4 +1,4 @@
-package cn.reactnative.modules;
+package cn.reactnative.modules.viewplugins;
 
 import android.app.Activity;
 import android.content.Context;

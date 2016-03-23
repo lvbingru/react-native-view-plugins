@@ -1,4 +1,4 @@
-package cn.reactnative.modules;
+package cn.reactnative.modules.viewplugins;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
