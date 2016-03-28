@@ -44,7 +44,7 @@ export default class RootNavigator extends Component {
     render() {
         if (!RootNavigator._instance)
         {
-            _instance = this;
+            RootNavigator._instance = this;
 
             const {useNavigatorIOS, initialRoute, ...others} = this.props;
             const Nav = (Platform.OS === 'android'?Navigator:(useNavigatorIOS?NavigatorIOS:Navigator));
@@ -82,10 +82,8 @@ export default class RootNavigator extends Component {
         }
     }
 
-    static _instance = null;
-
     static getInstance() {
-        return _instance;
+        return RootNavigator._instance;
     }
 
     wrapPage(page) {
