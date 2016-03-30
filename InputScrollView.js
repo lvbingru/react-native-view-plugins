@@ -2,7 +2,7 @@
  * Created by lvbingru on 12/16/15.
  */
 
-import React, {InteractionManager, Component, PropTypes, View, Text, ScrollView, Platform, Animated, UIManager, NativeModules} from 'react-native';
+import React, {InteractionManager, Component, PropTypes, View, Text, ScrollView, Platform, Animated, UIManager, NativeModules, Dimensions} from 'react-native';
 import TextInputState from 'react-native/Libraries/Components/TextInput/TextInputState';
 import dismissKeyboard from 'react-native/Libraries/Utilities/dismissKeyboard';
 import packageData from 'react-native/package.json';
@@ -39,14 +39,19 @@ export default class InputScrollView extends Component {
             style = {{flex:1}}
             onStartShouldSetResponderCapture = {e=>{
                 if (tapToDismiss === true) {
-                    ViewPlugins && ViewPlugins.isTextInput && ViewPlugins.isTextInput(
-                        e.target,
-                        r => {
-                          if (r===false) {
-                            dismissKeyboard();
-                          }
-                        }
-                    );
+                    if (ViewPlugins && ViewPlugins.isTextInput) {
+                        ViewPlugins.isTextInput(
+                            e.target,
+                            r => {
+                              if (r===false) {
+                                dismissKeyboard();
+                              }
+                            }
+                        );
+                    }
+                    else {
+                        dismissKeyboard();
+                    }
                 }
                 return false;
             }}
@@ -64,14 +69,14 @@ export default class InputScrollView extends Component {
                     }
                    const currentlyFocusedTextInput = TextInputState.currentlyFocusedField();
                    if (currentlyFocusedTextInput != null) {
-                       ViewPlugins && ViewPlugins.isSubview(currentlyFocusedTextInput, this.scrollViewRef.getInnerViewNode(), r=>{
-                            if (r===true) {
-                                this.scrollViewRef.scrollResponderScrollNativeHandleToKeyboard(currentlyFocusedTextInput,distance,true);
-                                this.moved = true;
-                                onKeyboardWillShow && onKeyboardWillShow(e);
-                            }
-                       })
+                       ViewPlugins && ViewPlugins.isSubview(
+                        currentlyFocusedTextInput,
+                        this.scrollViewRef.getInnerViewNode(),
+                        r => {
+                            if(r===true) {this.move(currentlyFocusedTextInput, e)}
+                        });
                    }
+                   onKeyboardWillShow && onKeyboardWillShow(e);
                 }}
                 onKeyboardWillHide = {e=> {
                     if (!this.scrollViewRef) {
@@ -79,12 +84,7 @@ export default class InputScrollView extends Component {
                     }
                     if (this.moved) {
                         this.moved = false;
-                        if (semver.gte(packageData.version, '0.20.0')) {
-                           this.scrollViewRef.scrollTo({x:0, y:this.offsetY});
-                        }
-                        else {
-                           this.scrollViewRef.scrollTo(this.offsetY, 0);
-                        }
+                        this.scrollToY(this.offsetY);
                     }
                 }}
                 onMomentumScrollEnd = {e=>{
@@ -101,8 +101,36 @@ export default class InputScrollView extends Component {
         );
     }
 
+    move(currentlyFocusedTextInput, e) {
+        UIManager.measureLayout(
+          currentlyFocusedTextInput,
+          React.findNodeHandle(this.scrollViewRef.getInnerViewNode()),
+          e=>{console.warning(e)},
+          (left, top, width, height)=>{
+              var keyboardScreenY = Dimensions.get('window').height;
+              if (e) {
+                  keyboardScreenY = e.endCoordinates.screenY;
+              }
+              var scrollOffsetY = top - keyboardScreenY + height + this.props.distance;
+              scrollOffsetY = Math.max(0, scrollOffsetY);
+              console.log('scrollOffsetY', scrollOffsetY)
+              this.scrollToY(scrollOffsetY);
+          }
+        );
+        this.moved = true;
+    }
+
     getInnerScrollView() {
         return this.scrollViewRef;
+    }
+
+    scrollToY(offsetY) {
+        if (semver.gte(packageData.version, '0.20.0')) {
+            this.scrollViewRef.scrollTo({x:0, y:offsetY});
+        }
+        else {
+            this.scrollViewRef.scrollTo(offsetY, 0);
+        }
     }
 }
 
