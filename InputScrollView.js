@@ -89,7 +89,7 @@ export default class InputScrollView extends Component {
                 }}
                 onMomentumScrollEnd = {e=>{
                     if (!this.moved) {
-                        this.offsetY = e.nativeEvent.contentOffset.y
+                        this.offsetY = Math.max(0, e.nativeEvent.contentOffset.y)
                     }
                 }}
                 {...others}

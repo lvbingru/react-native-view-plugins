@@ -7,19 +7,19 @@ import React, {Component, PropTypes, Image, PixelRatio} from 'react-native';
 
 const propTypes = {
     source : Image.propTypes.source,
-    width : PropTypes.number,
-    height : PropTypes.number,
     showLoadingPlaceholder : PropTypes.bool,
     showFailedPlaceholder : PropTypes.bool,
     LoadingPlaceholder : PropTypes.object,
     FailedPlaceholder : PropTypes.object,
     onFetchImageUrl : PropTypes.func,
     fetchUrl : PropTypes.string,
+    notResize : PropTypes.bool,
 }
 
 const defaultProps = {
     showLoadingPlaceholder : false,
-    showFailedPlaceholder : false
+    showFailedPlaceholder : false,
+    notResize : false
 }
 
 const cache = {};
@@ -36,12 +36,20 @@ export default class AsyncImage extends Component {
     }
 
     componentWillReceiveProps(props){
-        const {source} = this.props
-        const uri = props.source.uri
-        if (uri && source.uri != uri) {
-            this.initState();
+        const {source} = this.props;
+        if (source) {
+            if (typeof source === 'number') {
+                if(source != props.source) {
+                    this.initState();
+                }
+            }
+            else {
+                const uri = props.source.uri;
+                if (uri && source.uri != uri) {
+                    this.initState();
+                }
+            }
         }
-
         this.updateImage(props.source);
     }
 
@@ -56,7 +64,7 @@ export default class AsyncImage extends Component {
 
     render() {
         const {inFetching, realSource, loadEnd, loadSuccess} = this.state;
-        const {source, style, children, showLoadingPlaceholder, showFailedPlaceholder, LoadingPlaceholder, FailedPlaceholder, onFetchImageUrl,fetchUrl,  ...others} = this.props;
+        const {source, style, children, showLoadingPlaceholder, showFailedPlaceholder, LoadingPlaceholder, FailedPlaceholder, onFetchImageUrl, fetchUrl, notResize, ...others} = this.props;
 
         let Loading = null;
         if (showLoadingPlaceholder && !loadEnd) {
@@ -191,12 +199,17 @@ export default class AsyncImage extends Component {
             inFetching : true,
         });
 
-        onFetchImageUrl({
+        const options = {
             id,
             fetchUrl : this.props.fetchUrl,
-            width:Math.floor(width*PixelRatio.get() + 0.5),
-            height:Math.floor(height*PixelRatio.get() + 0.5),
-        }).then(r=>{
+        };
+
+        if (!this.props.notResize) {
+            options.width = Math.floor(width*PixelRatio.get() + 0.5);
+            options.height = Math.floor(height*PixelRatio.get() + 0.5);
+        }
+
+        onFetchImageUrl(options).then(r=>{
             const {url, deadline} = r;
             const key = id+"?"+width+"&"+height;
             cache[key] = url;
