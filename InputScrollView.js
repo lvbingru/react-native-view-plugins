@@ -107,13 +107,12 @@ export default class InputScrollView extends Component {
           React.findNodeHandle(this.scrollViewRef.getInnerViewNode()),
           e=>{console.warning(e)},
           (left, top, width, height)=>{
-              var keyboardScreenY = Dimensions.get('window').height;
+            let keyboardScreenY = Dimensions.get('window').height;
               if (e) {
                   keyboardScreenY = e.endCoordinates.screenY;
               }
-              var scrollOffsetY = top - keyboardScreenY + height + this.props.distance;
-              scrollOffsetY = Math.max(0, scrollOffsetY);
-              console.log('scrollOffsetY', scrollOffsetY)
+              let scrollOffsetY = top - keyboardScreenY + height + this.props.distance;
+              scrollOffsetY = Math.max(this.offsetY, scrollOffsetY);
               this.scrollToY(scrollOffsetY);
           }
         );
