@@ -26,6 +26,8 @@ export default class RefreshListView extends Component {
     return (
       <ListView
         scrollsToTop = {true}
+        removeClippedSubviews = {true}
+        automaticallyAdjustContentInsets = {false}
         onEndReachedThreshold = {4000}
         onEndReached = {()=>{
           onLoadMore && onLoadMore()
