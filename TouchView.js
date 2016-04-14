@@ -15,13 +15,31 @@ const defaultProps = {};
 export default class TouchView extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      data: props.data,
-    };
+
+    this.createTapResponder(props);
+  }
+
+  componentWillReceiveProps(props){
+    this.createTapResponder(props);
   }
 
   render() {
-    const {onSingleTap, onDoubleTap, onLongPress} = this.props;
+
+    return (
+      <View
+        {
+          ...this.tapResponder
+        }
+        {
+          ...this.props
+        }
+      >
+      </View>
+    );
+  }
+
+  createTapResponder(props) {
+    const {onSingleTap, onDoubleTap, onLongPress} = props;
 
     const release = (evt, clearDouble=true)=>{
       if (this.singleTapTimer) {
@@ -40,7 +58,7 @@ export default class TouchView extends Component {
       }
     }
 
-    const tapResponder = {
+    this.tapResponder = {
       onStartShouldSetResponder : evt => true,
 
       onResponderGrant : evt => {
@@ -91,18 +109,6 @@ export default class TouchView extends Component {
       onResponderTerminate : release,
       onResponderTerminationRequest : evt=> true,
     }
-
-    return (
-      <View
-        {
-          ...tapResponder
-        }
-        {
-          ...this.props
-        }
-      >
-      </View>
-    );
   }
 }
 
