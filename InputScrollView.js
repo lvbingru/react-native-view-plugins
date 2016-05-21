@@ -2,7 +2,8 @@
  * Created by lvbingru on 12/16/15.
  */
 
-import React, {InteractionManager, Component, PropTypes, View, Text, ScrollView, Platform, Animated, UIManager, NativeModules, Dimensions} from 'react-native';
+import React, { Component, PropTypes } from 'react';
+import { InteractionManager, View, Text, ScrollView, Platform, Animated, UIManager, NativeModules, Dimensions} from 'react-native';
 import TextInputState from 'react-native/Libraries/Components/TextInput/TextInputState';
 import dismissKeyboard from 'react-native/Libraries/Utilities/dismissKeyboard';
 import packageData from 'react-native/package.json';

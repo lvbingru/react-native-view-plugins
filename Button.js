@@ -2,7 +2,8 @@
  * Created by lvbingru on 11/14/15.
  */
 
-import React, {Component, PropTypes, View, Text, TouchableOpacity, Image} from 'react-native';
+import React, {Component, PropTypes } from 'react';
+import { View, Text, TouchableOpacity, Image} from 'react-native';
 
 
 const propTypes = {

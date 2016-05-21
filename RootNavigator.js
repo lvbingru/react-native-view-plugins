@@ -4,7 +4,8 @@
 
 //import {styles} from './RootNavigator.style.js'
 
-import React, {InteractionManager, Component, PropTypes, View, Text, Navigator, NavigatorIOS, Platform, BackAndroid} from 'react-native';
+import React, { Component, PropTypes } from 'react';
+import { InteractionManager, View, Text, Navigator, NavigatorIOS, Platform, BackAndroid } from 'react-native';
 
 const propTypes = {};
 

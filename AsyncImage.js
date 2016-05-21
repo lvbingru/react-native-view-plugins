@@ -2,7 +2,14 @@
  * Created by lvbingru on 12/13/15.
  */
 
-import React, {Component, PropTypes, Image, PixelRatio} from 'react-native';
+import React, {
+  Component, 
+  PropTypes,
+} from 'react';
+import {
+  Image, 
+  PixelRatio,
+} from 'react-native';
 
 
 const propTypes = {

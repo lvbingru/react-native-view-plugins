@@ -2,7 +2,8 @@
  * Created by lvbingru on 3/2/16.
  */
 
-import React, {InteractionManager, Component, PropTypes, View, Text} from 'react-native';
+import React, { Component, PropTypes, } from 'react';
+import { InteractionManager, View, Text } from 'react-native';
 
 const propTypes = {
   onSingleTap : PropTypes.func,

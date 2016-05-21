@@ -2,15 +2,12 @@
  * Created by lvbingru on 11/9/15.
  */
 'use strict';
-
-var React = require('react-native');
-var {
-    Component,
-    StyleSheet,
-    View,
-    TouchableOpacity,
-    PropTypes,
-    } = React;
+import React, { Component, PropTypes, } from 'react';
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+} from 'react-native';
 
 class TabBar extends Component {
     constructor(props){
