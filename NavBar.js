@@ -2,7 +2,8 @@
  * Created by lvbingru on 11/12/15.
  */
 
-import React, {StyleSheet, Component, PropTypes, Text, View, Image, TouchableOpacity, Platform} from 'react-native';
+import React, { Component, PropTypes, } from 'react';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Platform } from 'react-native';
 
 const propTypes = {
     title: PropTypes.string,
