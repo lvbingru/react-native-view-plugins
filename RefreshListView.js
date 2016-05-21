@@ -2,7 +2,8 @@
  * Created by lvbingru on 2/29/16.
  */
 
-import React, {ListView, RefreshControl, PropTypes, Component} from 'react-native';
+import React, { PropTypes, Component } from 'react';
+import { ListView, RefreshControl } from 'react-native';
 
 const propTypes = {
   isRefreshing : PropTypes.bool,
